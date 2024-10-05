@@ -1,0 +1,126 @@
+task1:
+
+
+apps1a & 2a
+admin
+pass
+
+ctrl alt
+
+----
+
+TASK1: Prepare for automation:
+
+@Apps1a: devices with "ZeroDayConfig:"
+conf t
+no logging console
+line vty 0 14
+	transport input all
+	exec-timeout 0 0
+int gi 1
+	no shut
+	ip add 192.168.108.5 255.255.255.0
+	do wr
+	
+@Apps2a: devices with "ZeroDayConfig:"
+conf t
+no logging console
+line vty 0 14
+	exec-timeout 0 0
+int gi 1
+	no shut
+	ip add 192.168.108.6 255.255.255.0
+	do wr
+	
+	-------
+	
+TASK2: Instal Vscode extension to make your programming heaven.
+
+Gitub Copilot
+autoDoctsring - python docstring
+python snippets
+AREPL for python
+better comments
+python indent
+python test explorer
+
+
+#upgrade your pip installer
+py -m pip install --upgrade pip
+py -m pip install netmiko
+
+----
+
+
+TASK3: ENCOR CCNP LAB: NETFLOW LAB 1 of 3
+NetFlow tracks information (can be seen in Wireshark)
+Sample TCP - Wifi
+(see phone screenshot)
+
+----
+
+TASK4: HOW TO IMPLEMENT NETFLOW COLLECTION:
+NETFLOW COLLECTION:
+(see phone screenshot)
+
+Exam Lab1: Create a default netflow exporter using Default Collection
+APPS1A:
+config t
+flow exporter MyFlowExporter
+	destination 192.168.108.1
+	transport udp 2055
+	export-protocol netflow-v9
+end
+
+APPS2A:
+config t
+flow exporter MyFlowExporter
+	destination 192.168.108.1
+	transport udp 2055
+	export-protocol netflow-v9
+end
+
+
+EXAM NETFLOW LAB2: Learn to Create your own Netflow Configs:
+step 1: Configure and Verify Flexible [ikaw nagcustom] Netflow 
+conf t
+	Flow record CCNPENCOR-CUSTOM-OUT
+	description CustomFlowforEncorLAB
+	match ipv4 destination address
+	match transport destination-port
+	collect counter bytes
+	collect counter packets
+end
+show flow record CCNPENCOR-CUSTOM-OUT
+
+
+step 2: Create Flow Exporter:
+conf t
+	flow exporter CCNP8-COLLECTOR-HOST
+	destination 192.168.108.1
+	export-protocol netflow-v9
+	transport UDP 2055
+	end
+show flow exporter CCNP8-COLLECTOR-HOST
+
+Step 3: Create Flow Monitor and associate Flow Records and Flow Exporter with it.
+config t
+	flow monitor CCNP8-INBOUND-MONITOR
+	record netflow ipv4 original-input
+	cache timeout active 30
+	exporter CCNP8-COLLECTOR-HOST
+	exit
+	flow monitor CCNP8-OUTBOUND-MONITOR
+	record CCNPENCOR-CUSTOM-OUT
+	cache timeout active 30
+	exporter CCNP8-COLLECTOR-HOST
+	exit
+show flow monitor
+
+
+Step 4: Configure the appropriate interface:
+conf t
+	interface gigabit 1
+	ip flow monitor CCNP8-INBOUND-MONITOR input
+	ip flow monitor CCNP8-OUTBOUND-MONITOR output
+	
