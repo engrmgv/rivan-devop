@@ -1,0 +1,14 @@
+---
+- name: CHANGE HOSTNAME
+  hosts: switch
+  gather_facts: no
+  become: yes
+
+  tasks:
+    - name: HOSTNAME
+      ios_command: 
+        commands:
+          - configure terminal
+          - hostname CORESWITCH
+      vars:
+        ansible_network_os: ios
